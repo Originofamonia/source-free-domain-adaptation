@@ -175,8 +175,7 @@ class TimexDataset(Dataset):
         return cls(doc_indices, features)
 
 
-if __name__ == "__main__":
-
+def main():
     parser = argparse.ArgumentParser(
         description="""%(prog)s trains SEMEVAL-2021 temporal baseline.""",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -187,3 +186,7 @@ if __name__ == "__main__":
                         help="The directory to save the model and the log files.")
     args = parser.parse_args()
     train(args.train_dir, args.save_dir)
+
+
+if __name__ == "__main__":
+    main()

@@ -55,6 +55,7 @@ class Split(Enum):
     dev = "dev"
     test = "test"
 
+
 @dataclass
 class DataTrainingArguments:
     """
@@ -68,6 +69,8 @@ class DataTrainingArguments:
     # Only allowed task is Negation, don't need this field from Glue
     #task_name: str = field(metadata={"help": "The name of the task to train on: " + ", ".join(glue_processors.keys())})
     data_dir: str = field(
+        default=f'practice_text/negation',
+        # dev is for test, train is for adaptation
         metadata={"help": "The input data dir. Should contain the .tsv files (or other data files) for the task."}
     )
     max_seq_length: int = field(
@@ -80,6 +83,7 @@ class DataTrainingArguments:
     overwrite_cache: bool = field(
         default=False, metadata={"help": "Overwrite the cached training and evaluation sets"}
     )
+
 
 class NegationProcessor(DataProcessor):
     """ Processor for the sdfa shared task negation datasets """
@@ -94,11 +98,16 @@ class NegationProcessor(DataProcessor):
 
     def get_train_examples(self, data_dir):
         """See base class."""
-        return self._create_examples(self._read_tsv(os.path.join(data_dir, "train.tsv")), "train")
+        right_list = self._read_tsv(os.path.join(data_dir, "dev.tsv"))
+        left_list = self._read_tsv(os.path.join(data_dir, "dev_labels.txt"))
+        merged_list = [(l[0], r[0]) for l, r in zip(left_list, right_list)]
+        # for left, right in zip(left_list, right_list):
+        #     print(left, right)
+        return self._create_examples(merged_list, "train")
 
     def get_dev_examples(self, data_dir):
         """See base class."""
-        return self._create_examples(self._read_tsv(os.path.join(data_dir, "dev.tsv")), "dev")
+        return self._create_examples(self._read_tsv(os.path.join(data_dir, "train.tsv")), "test")
 
     def get_test_examples(self, data_dir):
         """See base class."""
@@ -205,7 +214,7 @@ class NegationDataset(Dataset):
     def get_labels(self):
         return self.label_list
 
-    
+
 @dataclass
 class ModelArguments:
     """
@@ -213,6 +222,7 @@ class ModelArguments:
     """
 
     model_name_or_path: str = field(
+        default="tmills/roberta_sfda_sharpseed",
         metadata={"help": "Path to pretrained model or model identifier from huggingface.co/models"}
     )
     config_name: Optional[str] = field(
@@ -225,6 +235,88 @@ class ModelArguments:
         default=None, metadata={"help": "Where do you want to store the pretrained models downloaded from s3"}
     )
 
+@dataclass
+class TrainingArguments(TrainingArguments):
+    output_dir: str = field(
+        default=f'practice_data/res/negation',
+        metadata={"help": "The output directory where the model predictions and will be written."}
+    )
+    logging_dir: str = field(
+        default=f'outputs',
+        metadata={"help": "logging_dir"}
+    )
+    do_train: bool = field(
+        default=True,
+        metadata={"help": "train.tsv: target domain for unlabeled adaptation"}
+    )
+    do_eval: bool = field(
+        default=True,
+        metadata={"help": "dev.tsv labeled"}
+    )
+    do_predict: bool = field(
+        default=False,
+        metadata={"help": "do test"}
+    )
+    overwrite_output_dir: bool = field(
+        default=True,
+        metadata={"help": "overwrite_output_dir"}
+    )
+    local_rank: int = field(
+        default=-1,
+        metadata={"help": "DDP local rank"}
+    )
+    device: int = field(
+        default=1,
+        metadata={"help": "device id"}
+    )
+    n_gpu: int = field(
+        default=1,
+        metadata={"help": "n_gpu"}
+    )
+    fp16: bool = field(
+        default=False,
+        metadata={"help": "fp16"}
+    )
+    seed: int = field(
+        default=444,
+        metadata={"help": "seed"}
+    )
+    train_batch_size: int = field(
+        default=32,
+        metadata={"help": "train_batch_size"}
+    )
+    dataloader_drop_last: bool = field(
+        default=True,
+        metadata={"help": "dataloader_drop_last"}
+    )
+    max_steps: int = field(
+        default=1e2,
+        metadata={"help": "max_steps"}
+    )
+    gradient_accumulation_steps: int = field(
+        default=1,
+        metadata={"help": "gradient_accumulation_steps"}
+    )
+    weight_decay: float = field(
+        default=1e-4,
+        metadata={"help": "weight_decay"}
+    )
+    learning_rate: float = field(
+        default=1e-5,
+        metadata={"help": "learning_rate"}
+    )
+    adam_epsilon: float = field(
+        default=1e-8,
+        metadata={"help": "adam_epsilon"}
+    )
+    warmup_steps: int = field(
+        default=1e1,
+        metadata={"help": "warmup_steps"}
+    )
+    # to_json_string: bool = field(
+    #     default=True,
+    #     metadata={"help": "to_json_string"}
+    # )
 
 def main():
     # See all possible arguments in src/transformers/training_args.py

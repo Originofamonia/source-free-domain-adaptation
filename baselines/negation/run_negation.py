@@ -68,7 +68,8 @@ class NegationDataset(Dataset):
     @classmethod
     def from_tsv(cls, tsv_file, tokenizer):
         """Creates examples for the test set."""
-        lines = DataProcessor._read_tsv(tsv_file)
+        tsv_path = os.path.join(os.getcwd(), tsv_file)
+        lines = DataProcessor._read_tsv(tsv_path)
         examples = []
         for (i, line) in enumerate(lines):
             guid = 'instance-%d' % i
@@ -93,10 +94,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="""%(prog)s runs SEMEVAL-2021 negation baseline.""",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-
+    # dev is for test, train is for adaptation
     parser.add_argument("-f", "--data_file", metavar="FILE", dest="data_file",
-                        help="The input data file. Should be a .tsv with one instance per line.")
+        default=f'practice_text/negation/dev.tsv',
+        help="The input data file. Should be a .tsv with one instance per line.")
     parser.add_argument("-o", "--output_dir", metavar="DIR", dest="output_dir",
-                        help="The output directory where the model predictions and will be written.")
+        default=f'practice_data/res/negation',
+        help="The output directory where the model predictions and will be written.")
     args = parser.parse_args()
     predict(args.data_file, args.output_dir)

@@ -58,10 +58,13 @@ def read_tsvs(ref_file, res_file):
     return ref_output, res_output
 
 
-if __name__ == "__main__":
+def main():
     print("SemEval 2021 Task 10 scorer v0.2")
-    _, input_dir, output_dir = sys.argv
-    
+    # _, input_dir, output_dir = sys.argv
+    # input_dir = os.path.join(os.getcwd(), f"outputs")
+    input_dir = os.path.join(os.getcwd(), f'practice_data')
+    output_dir = os.path.join(os.getcwd(), f"outputs")
+
     # check which tasks have been submitted
     has_time = os.path.exists(os.path.join(input_dir, 'res', 'time'))
     has_negation = os.path.exists(os.path.join(input_dir, 'res', 'negation'))
@@ -99,3 +102,7 @@ if __name__ == "__main__":
             output_file.write(f"{key}:{value}\n")
 
     print("Success!")
+
+
+if __name__ == "__main__":
+    main()

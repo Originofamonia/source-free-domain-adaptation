@@ -176,8 +176,10 @@ if __name__ == "__main__":
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     parser.add_argument("-p", "--predict", metavar="DIR", dest="predict_dir",
-                        help="The root of the directory tree containing raw text for prediction.")
+        default=f"practice_text/time",
+        help="The root of the directory tree containing raw text for prediction.")
     parser.add_argument("-o", "--output", metavar="DIR", dest="output_dir",
-                        help="The directory to store the prediction in Anafora XML.")
+        default=f"practice_data/res/time",
+        help="The directory to store the prediction in Anafora XML.")
     args = parser.parse_args()
     predict(args.predict_dir, args.output_dir)
