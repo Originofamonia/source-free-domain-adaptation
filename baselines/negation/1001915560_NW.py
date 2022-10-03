@@ -28,9 +28,9 @@ class Solution:
             arrow[0, j] = '1'
 
         # fill matrix
-        self.needle_fill_matrix(seq_a, seq_b, sub, gap, f, arrow)
+        self.needle_fill_matrix2(seq_a, seq_b, sub, gap, f, arrow)
         print(f)
-        arrow[0, 0] = 123
+
         arrow = np.asarray(arrow, dtype=int)
         print(arrow)
 
@@ -45,8 +45,8 @@ class Solution:
     
     def dfs(self, seq_a, seq_b, f, arrow, aligns, i, j, part_a, part_b):
 
-        # direc = arrow[i, j]
-        direc = self.peek(f, arrow, i, j)
+        direc = arrow[i, j]
+        # direc = self.peek(f, arrow, i, j)
         print(i, j, direc)
 
         if len(part_a) == len(part_b) and i == 0 and j == 0:
@@ -78,6 +78,9 @@ class Solution:
                 return
 
     def needle_fill_matrix(self, seq_a, seq_b, sub, gap, f, arrow):
+        """
+        arrow points down, diag, right
+        """
         for i in range(1, f.shape[0]):
             for j in range(1, f.shape[1]):
                 upper = f[i - 1, j] + gap
@@ -98,6 +101,25 @@ class Solution:
                         arrow[i-1, j-1] = str(int(arrow[i-1, j-1])) + '2'
                     elif idx == '3':  # from upper
                         arrow[i-1, j] = str(int(arrow[i-1, j])) + '3'
+    
+    def needle_fill_matrix2(self, seq_a, seq_b, sub, gap, f, arrow):
+        """
+        arrow points left, diag, up
+        """
+        for i in range(1, f.shape[0]):
+            for j in range(1, f.shape[1]):
+                upper = f[i - 1, j] + gap
+                left = f[i, j - 1] + gap
+                diag = f[i - 1, j - 1] + sub[seq_a[i - 1]][seq_b[j - 1]]
+                listy = np.asarray([left, diag, upper])
+                f[i, j] = np.max(listy)
+                max_indices = (np.squeeze(np.argwhere(listy == np.amax(listy))) + 1).tolist()
+                if type(max_indices) == int:
+                    max_indices = str(max_indices)
+                else:
+                    max_indices = ''.join(map(str, max_indices))
+
+                arrow[i, j] = max_indices
 
     def peek(self, f, arrow, i, j):
         """
@@ -117,8 +139,8 @@ class Solution:
 
 if __name__ == '__main__':
     sol = Solution()
-    seq_a = 'agc'
-    seq_b = 'aacc'
+    seq_a = 'AAAAAA'
+    seq_b = 'Ggggg'
     sub = {
         'a': {'a': 1, 't': -1, 'c': -1, 'g': -1},
         't': {'a': -1, 't': 1, 'c': -1, 'g': -1},
