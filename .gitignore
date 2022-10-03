@@ -3,3 +3,4 @@ practice_text
 outputs
 practice_data
 runs
+baselines/negation/__pycache__

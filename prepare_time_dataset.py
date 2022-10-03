@@ -14,8 +14,8 @@ ssl._create_default_https_context = ssl._create_unverified_context
 def prepare_practice(target_path):
 
     time_path = os.path.join(target_path, "time")
-    if os.path.exists(time_path):
-        raise Exception("%s already exists!" % time_path)
+    # if os.path.exists(time_path):
+    #     raise Exception("%s already exists!" % time_path)
     download_path = os.path.join(target_path, "TempEval-3")  # os.path.join(target_path, "download")
     os.makedirs(download_path, exist_ok=True)
 
@@ -45,7 +45,7 @@ def prepare_practice(target_path):
     # timeml_path = f'practice_text/TBAQ-cleaned/TempEval-tools/merge-relations/timegraph_input/wsj_0555.tml'
     # a = ''.join(anafora.ElementTree.parse(timeml_path).getroot().itertext())
     os.makedirs(time_path, exist_ok=True)
-    tbaq_path = os.path.join(download_path, "TE3-platinum-test-and-data")
+    tbaq_path = download_path # os.path.join(download_path, "TE3-platinum-test-and-data")
     copy_text.copy_timeml_text(tbaq_path, time_path, "", False)
     print("Done.")
 
