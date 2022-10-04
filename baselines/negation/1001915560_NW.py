@@ -5,7 +5,7 @@ from copy import deepcopy
 
 class Solution:
     def global_alignment(self, seq_a: str, seq_b: str, 
-        substitution: dict, gap: int):  # -> list(tuple)
+        sub: dict, gap: int):  #  -> list(tuple)
         """
         needleman-wunsch algorithm:
         1. substitution matrix
