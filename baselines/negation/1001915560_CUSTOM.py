@@ -1,5 +1,6 @@
 import itertools
 import string
+import pandas as pd
 import numpy as np
 from numpy import unravel_index
 from copy import deepcopy
@@ -110,9 +111,11 @@ def main():
             else:
                 sub[i, j] = -1
     
-    # s = np.append(np.array([alphabets]), sub, axis=0)
-    # alphabets.insert(0, '_')
-    # s = np.append(np.expand_dims(np.array(alphabets), axis=1), s, axis=1)
+    s = np.append(np.array([alphabets]), sub, axis=0)
+    alphabets.insert(0, '_')
+    s = np.append(np.expand_dims(np.array(alphabets), axis=1), s, axis=1)
+    df = pd.DataFrame(s)
+    df.to_csv('1001915560_S.txt',sep='\t', index=True, header=True)
     # np.savetxt('1001915560_S.txt', s, delimiter=',', fmt='%s')
     return sub, alphabets
 
@@ -123,7 +126,7 @@ def question42():
     seq_b = 'thequickbrownfoxjumpsoverthelazydog'
     gap = -2
     sub, alphabets = main()
-
+    alphabets.remove('_')
     aligns, d = sol.local_alignment(seq_a, seq_b, sub, gap, alphabets)
     seq_b_list = [cha for cha in seq_b]
     seq_b_list.insert(0, ' ')
@@ -132,7 +135,9 @@ def question42():
     seq_a_list.insert(0, ' ')
     seq_a_list.insert(0, ' ')
     d = np.append(np.expand_dims(np.array(seq_a_list), axis=1), d, axis=1)
-    np.savetxt('1001915560_D.txt', d, delimiter=',', fmt='%s')
+    df = pd.DataFrame(d)
+    df.to_csv('1001915560_D.txt', sep='\t', index=True, header=True)
+    # np.savetxt('1001915560_D.txt', d, delimiter=',', fmt='%s')
 
 if __name__ == '__main__':
     # main()

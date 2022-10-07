@@ -139,8 +139,8 @@ class Solution:
 
 if __name__ == '__main__':
     sol = Solution()
-    seq_a = 'AAAAAA'
-    seq_b = 'Ggggg'
+    seq_a = 'gata'
+    seq_b = 'ctac'
     sub = {
         'a': {'a': 1, 't': -1, 'c': -1, 'g': -1},
         't': {'a': -1, 't': 1, 'c': -1, 'g': -1},
